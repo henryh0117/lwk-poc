@@ -40,14 +40,10 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Runtime environment variables
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
-
-# Create start script
-RUN echo '#!/bin/sh' > /app/start.sh && \
-    echo 'node server.js' >> /app/start.sh && \
-    chmod +x /app/start.sh
+# Set runtime environment variables
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
 # Switch to non-root user
 USER nextjs
@@ -55,4 +51,4 @@ USER nextjs
 # Expose port
 EXPOSE 3000
 
-CMD ["/app/start.sh"]
+CMD ["node", "server.js"]
