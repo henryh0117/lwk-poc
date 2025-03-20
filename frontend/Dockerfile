@@ -40,14 +40,19 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Runtime environment variables
+ENV PORT 3000
+ENV HOSTNAME "0.0.0.0"
+
+# Create start script
+RUN echo '#!/bin/sh' > /app/start.sh && \
+    echo 'node server.js' >> /app/start.sh && \
+    chmod +x /app/start.sh
+
 # Switch to non-root user
 USER nextjs
 
 # Expose port
 EXPOSE 3000
 
-# Start the application
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
-
-CMD ["node", "server.js"]
+CMD ["/app/start.sh"]
