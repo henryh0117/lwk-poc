@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 interface ProductInterface {
     sku?: string;
     type1?: string;
@@ -81,7 +83,6 @@ export default function Home() {
           }
         });
 
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
         const response = await fetch(`${apiUrl}/api/products/search`, {
           method: 'POST',
           headers: {
