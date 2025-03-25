@@ -21,7 +21,7 @@ def migrate_data():
     source_session = setup_connection(source_url)
     
     # Target (remote) database connection
-    target_url = ''
+    target_url = '' 
     target_session = setup_connection(target_url)
     
     try:
@@ -33,8 +33,20 @@ def migrate_data():
         engine = create_engine(target_url)
         Base.metadata.create_all(engine)
         
-        # Copy each product to target database
+        # Get existing SKUs from target database
+        existing_skus = {p.sku for p in target_session.query(Product.sku).all()}
+        print(f"Found {len(existing_skus)} existing products in target database")
+        
+        # Track statistics
+        new_count = 0
+        skip_count = 0
+        
+        # Copy each product to target database if it doesn't exist
         for product in source_products:
+            if product.sku in existing_skus:
+                skip_count += 1
+                continue
+                
             # Create new product object for target database
             new_product = Product(
                 sku=product.sku,
@@ -48,17 +60,26 @@ def migrate_data():
                 side_a_angle=product.side_a_angle,
                 side_b_angle=product.side_b_angle,
                 shaft_dia=product.shaft_dia,
-                notes=product.notes
+                notes=product.notes,
+                vendor=product.vendor
             )
             target_session.add(new_product)
+            # print(f"Added product: {new_product.sku} - {new_product.side_a} - {new_product.side_b} - {new_product.c_to_c}")
+            new_count += 1
             
-        # Commit changes to target database
-        target_session.commit()
-        print("Data migration completed successfully!")
+            # Commit in batches of 100 to avoid memory issues
+            if new_count % 100 == 0:
+                target_session.commit()
+                # print(f"Committed {new_count} new products so far...")
         
-        # Verify the number of records in target database
-        count = target_session.query(Product).count()
-        print(f"Total records in target database: {count}")
+        # Final commit for any remaining products
+        if new_count % 100 != 0:
+            target_session.commit()
+        
+        print("\nMigration Summary:")
+        print(f"- Skipped {skip_count} existing products")
+        print(f"- Added {new_count} new products")
+        print(f"- Total products in target database: {target_session.query(Product).count()}")
         
     except Exception as e:
         print(f"Error during migration: {str(e)}")
@@ -68,4 +89,7 @@ def migrate_data():
         target_session.close()
 
 if __name__ == "__main__":
-    migrate_data()
+    target_url = 'postgresql://postgres:ulJYqWqrwrbgGYClrOzyWWgEszWhmNqB@centerbeam.proxy.rlwy.net:36815/railway' 
+    target_session = setup_connection(target_url)
+    print(f"Total products in target database: {target_session.query(Product).count()}")
+    # migrate_data()

@@ -58,6 +58,7 @@ class ProductSearch(BaseModel):
     side_b_angle: Optional[str] = None
     shaft_dia: Optional[str] = None
     notes: Optional[str] = None
+    vendor: Optional[str] = None
 
 @app.get("/")
 def read_root():
@@ -88,19 +89,19 @@ def search_products(search_query: ProductSearch, db: Session = Depends(get_db)):
             params['sku'] = f'%{search_query.sku}%'
         if search_query.type1:
             conditions.append("type1 ILIKE :type1")
-            params['type1'] = f'%{search_query.type1}%'
+            params['type1'] = f'{search_query.type1}'
         if search_query.type2:
             conditions.append("type2 ILIKE :type2")
             params['type2'] = f'%{search_query.type2}%'
         if search_query.c_to_c:
             conditions.append("c_to_c ILIKE :c_to_c")
-            params['c_to_c'] = f'%{search_query.c_to_c}%'
+            params['c_to_c'] = f'{search_query.c_to_c}%'
         if search_query.side_a:
             conditions.append("side_a ILIKE :side_a")
-            params['side_a'] = f'%{search_query.side_a}%'
+            params['side_a'] = f'{search_query.side_a}'
         if search_query.side_b:
             conditions.append("side_b ILIKE :side_b")
-            params['side_b'] = f'%{search_query.side_b}%'
+            params['side_b'] = f'{search_query.side_b}'
         if search_query.side_a_bushing:
             conditions.append("side_a_bushing ILIKE :side_a_bushing")
             params['side_a_bushing'] = f'%{search_query.side_a_bushing}%'
@@ -116,9 +117,9 @@ def search_products(search_query: ProductSearch, db: Session = Depends(get_db)):
         if search_query.shaft_dia:
             conditions.append("shaft_dia ILIKE :shaft_dia")
             params['shaft_dia'] = f'%{search_query.shaft_dia}%'
-        if search_query.notes:
-            conditions.append("notes ILIKE :notes")
-            params['notes'] = f'%{search_query.notes}%'
+        if search_query.vendor:
+            conditions.append("vendor ILIKE :vendor")
+            params['vendor'] = f'{search_query.vendor}'
 
         # If no search criteria provided, return empty list
         if not conditions:

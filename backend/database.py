@@ -32,6 +32,7 @@ class Product(Base):
     side_b_angle = Column(String)
     shaft_dia = Column(String)
     notes = Column(String)
+    vendor = Column(String)
 
 def get_db():
     db = SessionLocal()

@@ -17,6 +17,7 @@ interface ProductInterface {
     side_b_angle?: number;
     shaft_dia?: number;
     notes?: string;
+    vendor?: string;
 }
 
 
@@ -41,10 +42,11 @@ export default function Home() {
     side_a_angle: undefined,
     side_b_angle: undefined,
     shaft_dia: undefined,
-    notes: ''
+    notes: '',
+    vendor: ''
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -65,7 +67,8 @@ export default function Home() {
       side_a_angle: undefined,
       side_b_angle: undefined,
       shaft_dia: undefined,
-      notes: ''
+      notes: '',
+      vendor: ''
     });
   };
 
@@ -115,7 +118,7 @@ export default function Home() {
   return (
     <div className="min-h-screen p-8">
       <main className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Automann Torque Rod Search</h1>
+        <h1 className="text-3xl font-bold mb-8">Cross-vendor Torque Rod Search</h1>
         <div className="flex justify-end mb-4">
           <button
             type="button"
@@ -141,18 +144,21 @@ export default function Home() {
 
           <div className="space-y-2">
             <label htmlFor="type1" className="block text-sm font-medium">Type 1</label>
-            <input
-              type="text"
+            <select
               id="type1"
               name="type1"
-              className="w-full p-2 border rounded-md"
-              placeholder="Enter Type 1"
-              value={formData.type1}
+              className="w-full p-2 border rounded-md bg-white"
+              value={formData.type1 || ''}
               onChange={handleInputChange}
-            />
+            >
+              <option value="">Select Type 1</option>
+              <option value="With Bushing">With Bushing</option>
+              <option value="Full Ball">Full Ball</option>
+              <option value="Cabin">Cabin</option>
+            </select>
           </div>
 
-          <div className="space-y-2">
+          {formData.vendor !== 'AtroBushing' && <div className="space-y-2">
             <label htmlFor="type2" className="block text-sm font-medium">Type 2</label>
             <input
               type="text"
@@ -163,7 +169,7 @@ export default function Home() {
               value={formData.type2}
               onChange={handleInputChange}
             />
-          </div>
+          </div>}
 
           <div className="space-y-2">
             <label htmlFor="c_to_c" className="block text-sm font-medium">Center to Center</label>
@@ -180,31 +186,44 @@ export default function Home() {
 
           <div className="space-y-2">
             <label htmlFor="side_a" className="block text-sm font-medium">Side A</label>
-            <input
-              type="text"
+            <select
               id="side_a"
               name="side_a"
-              className="w-full p-2 border rounded-md"
-              placeholder="Enter Side A"
-              value={formData.side_a}
+              className="w-full p-2 border rounded-md bg-white"
+              value={formData.side_a || ''}
               onChange={handleInputChange}
-            />
+            >
+              <option value="">Select Side A</option>
+              <option value="Sleeve">Sleeve</option>
+              <option value="Taper">Taper</option>
+              <option value="Hollow">Hollow</option>
+              <option value="Straddle Off">Straddle Off</option>
+              <option value="N/A">N/A</option>
+              <option value="4864">4864</option>
+              <option value="Straddle">Straddle</option>
+            </select>
           </div>
 
           <div className="space-y-2">
             <label htmlFor="side_b" className="block text-sm font-medium">Side B</label>
-            <input
-              type="text"
+            <select
               id="side_b"
               name="side_b"
-              className="w-full p-2 border rounded-md"
-              placeholder="Enter Side B"
-              value={formData.side_b}
+              className="w-full p-2 border rounded-md bg-white"
+              value={formData.side_b || ''}
               onChange={handleInputChange}
-            />
+            >
+              <option value="">Select Side B</option>
+              <option value="Straddle">Straddle</option>
+              <option value="4865">4865</option>
+              <option value="Sleeve">Sleeve</option>
+              <option value="Taper">Taper</option>
+              <option value="Hollow">Hollow</option>
+              <option value="N/A">N/A</option>
+            </select>
           </div>
 
-          <div className="space-y-2">
+          {formData.vendor !== 'AtroBushing' && <div className="space-y-2">
             <label htmlFor="side_a_bushing" className="block text-sm font-medium">Side A Bushing</label>
             <input
               type="text"
@@ -215,9 +234,9 @@ export default function Home() {
               value={formData.side_a_bushing}
               onChange={handleInputChange}
             />
-          </div>
+          </div>}
 
-          <div className="space-y-2">
+          {formData.vendor !== 'AtroBushing' && <div className="space-y-2">
             <label htmlFor="side_b_bushing" className="block text-sm font-medium">Side B Bushing</label>
             <input
               type="text"
@@ -228,9 +247,9 @@ export default function Home() {
               value={formData.side_b_bushing}
               onChange={handleInputChange}
             />
-          </div>
+          </div>}
 
-          <div className="space-y-2">
+          {formData.vendor !== 'AtroBushing' && <div className="space-y-2">
             <label htmlFor="side_a_angle" className="block text-sm font-medium">Side A Angle</label>
             <input
               type="text"
@@ -241,9 +260,9 @@ export default function Home() {
               value={formData.side_a_angle || ''}
               onChange={handleInputChange}
             />
-          </div>
+          </div>}
 
-          <div className="space-y-2">
+          {formData.vendor !== 'AtroBushing' && <div className="space-y-2">
             <label htmlFor="side_b_angle" className="block text-sm font-medium">Side B Angle</label>
             <input
               type="text"
@@ -254,9 +273,9 @@ export default function Home() {
               value={formData.side_b_angle || ''}
               onChange={handleInputChange}
             />
-          </div>
+          </div>}
 
-          <div className="space-y-2">
+          {formData.vendor !== 'AtroBushing' && <div className="space-y-2">
             <label htmlFor="shaft_dia" className="block text-sm font-medium">Shaft Diameter</label>
             <input
               type="text"
@@ -267,19 +286,21 @@ export default function Home() {
               value={formData.shaft_dia || ''}
               onChange={handleInputChange}
             />
-          </div>
+          </div>}
 
           <div className="space-y-2">
-            <label htmlFor="notes" className="block text-sm font-medium">Notes</label>
-            <input
-              type="text"
-              id="notes"
-              name="notes"
-              className="w-full p-2 border rounded-md"
-              placeholder="Enter Notes"
-              value={formData.notes}
+            <label htmlFor="vendor" className="block text-sm font-medium">Vendor</label>
+            <select
+              id="vendor"
+              name="vendor"
+              className="w-full p-2 border rounded-md bg-white"
+              value={formData.vendor || ''}
               onChange={handleInputChange}
-            />
+            >
+              <option value="">Select Vendor</option>
+              <option value="Automann">Automann</option>
+              <option value="AtroBushing">AtroBushing</option>
+            </select>
           </div>
         </form>
 
@@ -295,19 +316,18 @@ export default function Home() {
               <div className="space-y-4">
                 {results.map((result) => (
                   <div key={result.id} className="border p-4 rounded-md">
-                    <h3 className="font-bold text-lg mb-2">{result.sku}: {result.type2}</h3>
+                    <h3 className="font-bold text-lg mb-2">{result.vendor} {result.sku}: {result.type2}</h3>
                     <div className="grid grid-cols-2 gap-2">
                       <p><span className="font-medium">Type 1:</span> {result.type1}</p>
                       <p><span className="font-medium">Type 2:</span> {result.type2}</p>
                       <p><span className="font-medium">Center to Center:</span> {result.c_to_c}</p>
                       <p><span className="font-medium">Side A:</span> {result.side_a}</p>
                       <p><span className="font-medium">Side B:</span> {result.side_b}</p>
-                      <p><span className="font-medium">Side A Bushing:</span> {result.side_a_bushing}</p>
-                      <p><span className="font-medium">Side B Bushing:</span> {result.side_b_bushing}</p>
+                      {result.side_a_bushing && <p><span className="font-medium">Side A Bushing:</span> {result.side_a_bushing}</p>}
+                      {result.side_b_bushing && <p><span className="font-medium">Side B Bushing:</span> {result.side_b_bushing}</p>}
                       {result.side_a_angle && <p><span className="font-medium">Side A Angle:</span> {result.side_a_angle}°</p>}
                       {result.side_b_angle && <p><span className="font-medium">Side B Angle:</span> {result.side_b_angle}°</p>}
                       {result.shaft_dia && <p><span className="font-medium">Shaft Diameter:</span> {result.shaft_dia}</p>}
-                      {result.notes && <p className="col-span-2"><span className="font-medium">Notes:</span> {result.notes}</p>}
                     </div>
                   </div>
                 ))}
